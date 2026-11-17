@@ -22,6 +22,7 @@ public:
   ~MyApp() override = default;
 
   void initCallback(GLFWwindow *win) override;
+  void windowSizeCallback(GLFWwindow* win, int width, int height) override;
   void displayCallback(GLFWwindow *win, double elapsed) override;
   void windowCloseCallback(GLFWwindow *win) override;
 
@@ -217,6 +218,10 @@ void MyApp::drawScene() {
 void MyApp::initCallback(GLFWwindow *win [[maybe_unused]]) {
   createBufferObjects();
   createShaderProgram();
+}
+
+void MyApp::windowSizeCallback(GLFWwindow *win [[maybe_unused]], int width, int height) {
+    drawScene();
 }
 
 void MyApp::windowCloseCallback(GLFWwindow *win [[maybe_unused]]) {

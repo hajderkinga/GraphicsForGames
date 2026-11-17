@@ -8,12 +8,24 @@
 
 #include "./mglApp.hpp"
 
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 
 #include "./mglError.hpp" // IWYU pragma: keep -- required in debug mode
 
 namespace mgl {
+
+static void setAspectCorrectViewport(int width, int height) {
+  if (width <= 0 || height <= 0) {
+    return;
+  }
+
+  const int viewportSize = std::min(width, height);
+  const int viewportX = (width - viewportSize) / 2;
+  const int viewportY = (height - viewportSize) / 2;
+  glViewport(viewportX, viewportY, viewportSize, viewportSize);
+}
 
 /////////////////////////////////////////////////////////////// STATIC CALLBACKS
 
@@ -27,7 +39,7 @@ static void framebuffer_size_callback(GLFWwindow *window, int width,
                                       int height) {
   Engine::getInstance().WindowWidth = width;
   Engine::getInstance().WindowHeight = height;
-  glViewport(0, 0, width, height);
+  setAspectCorrectViewport(width, height);
   mgl::App *app = mgl::Engine::getInstance().getApp();
   if (app) {
     app->windowSizeCallback(window, width, height);
@@ -189,7 +201,7 @@ void Engine::setupOpenGL() {
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glFrontFace(GL_CCW);
-  glViewport(0, 0, WindowWidth, WindowHeight);
+  setAspectCorrectViewport(WindowWidth, WindowHeight);
 }
 
 void Engine::displayInfo() {
